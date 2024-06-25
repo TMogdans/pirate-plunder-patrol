@@ -1,0 +1,65 @@
+[gd_scene load_steps=11 format=3 uid="uid://cff8sfafmrsd1"]
+
+[ext_resource type="Script" path="res://Scripts/player.gd" id="1_uqip7"]
+[ext_resource type="Script" path="res://Scripts/playerInput.gd" id="2_issq4"]
+[ext_resource type="PackedScene" uid="uid://dxnxfsu6k2dj5" path="res://Scenes/camera.tscn" id="3_axrqo"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1uo3e"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cib8s"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_kxwao"]
+material = SubResource("StandardMaterial3D_cib8s")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ysg8m"]
+albedo_color = Color(0.654902, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_bxylf"]
+material = SubResource("StandardMaterial3D_ysg8m")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_n3xad"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ly2hg"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Pivot:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="player" type="CharacterBody3D"]
+script = ExtResource("1_uqip7")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot"]
+mesh = SubResource("CapsuleMesh_1uo3e")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot/MeshInstance3D"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.172489, 0.49978, -0.415686)
+mesh = SubResource("SphereMesh_kxwao")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Pivot/MeshInstance3D"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.172, 0.5, -0.415456)
+mesh = SubResource("SphereMesh_kxwao")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Pivot/MeshInstance3D"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.304, -0.49667)
+mesh = SubResource("SphereMesh_bxylf")
+
+[node name="RayCast3D" type="RayCast3D" parent="Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.497092, 0)
+target_position = Vector3(0, 0, -2)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_n3xad")
+
+[node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ly2hg")
+
+[node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
+script = ExtResource("2_issq4")
+
+[node name="CameraPivot" parent="." instance=ExtResource("3_axrqo")]

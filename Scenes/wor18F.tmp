@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3 uid="uid://w0ai0xr758a2"]
+
+[ext_resource type="Script" path="res://Scripts/lobby.gd" id="1_s1gg7"]
+[ext_resource type="PackedScene" uid="uid://b8k3mo8v055jv" path="res://Scenes/debugPanel.tscn" id="2_mlgv0"]
+[ext_resource type="Script" path="res://Scripts/hostButton.gd" id="3_t17y1"]
+[ext_resource type="PackedScene" uid="uid://dxnxfsu6k2dj5" path="res://Scenes/camera.tscn" id="4_5h2gp"]
+[ext_resource type="PackedScene" uid="uid://ignpdv10rx52" path="res://addons/boujie_water_shader/prefabs/deep_ocean.tscn" id="6_jhwtk"]
+[ext_resource type="Texture2D" uid="uid://br6pv7i07hbhy" path="res://Assets/Textures/skybox_01.png" id="7_qoowg"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_vf5yb"]
+panorama = ExtResource("7_qoowg")
+
+[sub_resource type="Sky" id="Sky_jnfvm"]
+sky_material = SubResource("PanoramaSkyMaterial_vf5yb")
+
+[sub_resource type="Environment" id="Environment_piknq"]
+background_mode = 2
+sky = SubResource("Sky_jnfvm")
+
+[node name="PiratePlunderPatrol" type="Node"]
+script = ExtResource("1_s1gg7")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DebugPanel" parent="UI" instance=ExtResource("2_mlgv0")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 300.0
+offset_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 1
+
+[node name="Control" type="HBoxContainer" parent="UI"]
+layout_mode = 0
+offset_left = 530.0
+offset_top = 1004.0
+offset_right = 642.0
+offset_bottom = 1044.0
+
+[node name="Label" type="Label" parent="UI/Control"]
+layout_mode = 2
+text = "Connect"
+
+[node name="Button" type="Button" parent="UI/Control"]
+layout_mode = 2
+text = "Host"
+script = ExtResource("3_t17y1")
+
+[node name="world" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 0.838975, 0.544171, 0, -0.544171, 0.838975, 0, 9.25939, 12.3549)
+
+[node name="CameraPivot" parent="world" instance=ExtResource("4_5h2gp")]
+
+[node name="DeepOcean" parent="world" instance=ExtResource("6_jhwtk")]
+far_edge = 4000
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="world"]
+environment = SubResource("Environment_piknq")
+
+[node name="level" type="Node" parent="world"]
+
+[node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://Scenes/pirate_ship_01.tscn")
+spawn_path = NodePath("../world/level")
+spawn_limit = 1
+
+[connection signal="pressed" from="UI/Control/Button" to="UI/Control/Button" method="_on_pressed"]

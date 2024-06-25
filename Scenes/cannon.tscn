@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://cca4p2nqarqg3"]
+
+[ext_resource type="Script" path="res://Scripts/cannon.gd" id="1_enm7i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6bxrn"]
+albedo_color = Color(0.334825, 0.0631639, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_duplc"]
+material = SubResource("StandardMaterial3D_6bxrn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jglqc"]
+albedo_color = Color(0.262932, 0.262932, 0.262932, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_dvyo4"]
+material = SubResource("StandardMaterial3D_jglqc")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kbkco"]
+size = Vector3(0.998749, 1.35938, 2.04956)
+
+[node name="Cannon" type="CharacterBody3D"]
+script = ExtResource("1_enm7i")
+thing = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_duplc")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.75, 0, 0, 0, 0.325238, 0.709224, 0, -0.945632, 0.243929, 0, 0.179584, -0.209243)
+mesh = SubResource("CylinderMesh_dvyo4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00154114, 0.176984, -0.207886)
+shape = SubResource("BoxShape3D_kbkco")

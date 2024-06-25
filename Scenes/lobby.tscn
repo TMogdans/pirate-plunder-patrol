@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://crgein00keng8"]
+
+[ext_resource type="Script" path="res://Scripts/hostButton.gd" id="2_65fr1"]
+[ext_resource type="Script" path="res://Scripts/connectButton.gd" id="3_t4qxw"]
+
+[node name="LobbyUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 430.0
+offset_bottom = 54.0
+
+[node name="Options" type="HBoxContainer" parent="."]
+layout_mode = 2
+offset_right = 379.0
+offset_bottom = 31.0
+
+[node name="Label" type="Label" parent="Options"]
+layout_mode = 2
+text = "Direct:"
+
+[node name="Host" type="Button" parent="Options"]
+layout_mode = 2
+text = "Host"
+script = ExtResource("2_65fr1")
+
+[node name="Connect" type="Button" parent="Options"]
+layout_mode = 2
+text = "Connect"
+script = ExtResource("3_t4qxw")
+
+[node name="Remote" type="LineEdit" parent="Options"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "127.0.0.1"
+placeholder_text = "127.0.0.1"
+
+[connection signal="pressed" from="Options/Host" to="Options/Host" method="_on_pressed"]
+[connection signal="pressed" from="Options/Connect" to="Options/Connect" method="_on_pressed"]
