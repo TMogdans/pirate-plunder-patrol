@@ -1,5 +1,8 @@
 extends CharacterBody3D
 
+const SPEED = 5.0
+
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var max_speed: float = 8.0
 @export var dash_speed: float = 16.0
 @export var speed: float = 0.0
@@ -12,10 +15,10 @@ extends CharacterBody3D
 		$PlayerInput.set_multiplayer_authority(id)
 
 @onready var detector = $Pivot/RayCast3D
-@onready var level = get_node("../level")
+@onready var level = get_tree().root.get_node("world/level")
 @onready var input = $PlayerInput
 
-var direction = Vector3.ZERO
+#var direction = Vector3.ZERO
 var target_velocity = Vector3.ZERO
 var interaction_progress: float = 0
 var interaction_speed: float = 1.0
@@ -27,7 +30,7 @@ var carry_pos: Vector3 = Vector3(0.0, 1.5, 0.0)
 var inventory: Array[Item] = []
 var inventory_capacity = 1
 
-@onready var debug_panel = get_node("../UI/DebugPanel")
+#@onready var debug_panel = get_node("../UI/DebugPanel")
 
 var item_map: Dictionary = {
 	Stocks.TYPES.CANNONBALLS: preload("res://Scenes/cannonballs.tscn"),
@@ -40,11 +43,8 @@ func _ready() -> void:
 	if player == multiplayer.get_unique_id():
 		$CameraPivot/Camera3D.current = true
 
-func _process(_delta) -> void:
-	pass
-
 func _physics_process(delta) -> void:
-	if input.is_action_pressed("interact"):
+	if input.interacting:
 		if detector.is_colliding() and not interaction_lock:
 			var collider = detector.get_collider()
 			if collider.has_method("get_thing"):
@@ -87,11 +87,11 @@ func _physics_process(delta) -> void:
 								collider.load_cannonball()
 								_destroy_item(Stocks.TYPES.CANNONBALLS)
 	
-	if input.is_action_just_released("interact"):
+	if input.interacting:
 		interaction_lock = false
 		interaction_progress = 0.0
 		
-	if input.is_action_pressed("cancel"):
+	if Input.is_action_pressed("cancel"):
 		if not inventory.is_empty():
 			var item = _get_last_item_from_inventory()
 			if item != null:
@@ -99,51 +99,19 @@ func _physics_process(delta) -> void:
 				item.get_instance().is_carried = false
 				item.get_instance().spawn()
 			
-	
-	debug_panel.add_property("interaction progress", interaction_progress, 2)
-	debug_panel.add_property("is_dashing", is_dashing, 3)
+	if not is_on_floor():
+		velocity.y -= gravity * delta
 	
 	if not is_dashing:
-		if input.is_action_pressed("move_right"):
-			direction.x += 1
-			speed += acceleration * delta
-		if input.is_action_pressed("move_left"):
-			direction.x -= 1
-			speed += acceleration * delta
-		if input.is_action_pressed("move_back"):
-			direction.z += 1
-			speed += acceleration * delta
-		if input.is_action_pressed("move_forward"):
-			direction.z -= 1
-			speed += acceleration * delta
-		
-		speed = clampf(speed, 0.0, max_speed)
+		var direction = (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
+		if direction:
+			velocity.x = direction.x * SPEED
+			velocity.z = direction.z * SPEED
+			$Pivot.basis = Basis.looking_at(direction)
+		else:
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+			velocity.z = move_toward(velocity.z, 0, SPEED)
 	
-	if speed <= max_speed:
-		is_dashing = false
-	
-	if not is_dashing and input.is_action_pressed("dash"):
-		speed = dash_speed
-		is_dashing = true
-		
-	if direction != Vector3.ZERO:
-		direction = direction.normalized()
-		$Pivot.basis = Basis.looking_at(direction)
-	
-	speed -= friction * delta
-	if speed < 0:
-		speed = 0
-		
-	target_velocity.x = direction.x * speed
-	target_velocity.z = direction.z * speed
-	
-	if not is_on_floor():
-		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
-	
-	debug_panel.add_property("FPS", Performance.get_monitor(Performance.TIME_FPS), 0)
-	debug_panel.add_property("speed", speed, 1)
-	
-	velocity = target_velocity	
 	move_and_slide()
 
 func _create_item(item: Stocks.TYPES) -> Stocks:

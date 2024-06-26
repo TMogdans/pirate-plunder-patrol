@@ -44,6 +44,7 @@ data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0
 script = ExtResource("1_h88b5")
 
 [node name="shipMesh" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 
 [node name="deck" type="MeshInstance3D" parent="shipMesh"]
 transform = Transform3D(12, 0, 0, 0, 1, 0, 0, 0, 9, 0, 0, 0)
@@ -156,6 +157,7 @@ skeleton = NodePath("../deck")
 shape = SubResource("ConcavePolygonShape3D_m6nh7")
 
 [node name="interactables" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 
 [node name="StockCrateWood" parent="interactables" instance=ExtResource("1_p7tl3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.71221, 0.543077, 6.03201)
@@ -191,6 +193,7 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.0569
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.95537, 0.390952, 8.05893)
 
 [node name="players" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://Scenes/player.tscn")
@@ -198,3 +201,4 @@ spawn_path = NodePath("../players")
 spawn_limit = 4
 
 [node name="CameraPivot" parent="." instance=ExtResource("5_q3ggk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.5482, 0.639398)

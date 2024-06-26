@@ -27,6 +27,9 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath("Pivot:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath(".:velocity")
+properties/2/spawn = true
+properties/2/replication_mode = 1
 
 [node name="player" type="CharacterBody3D"]
 script = ExtResource("1_uqip7")
@@ -60,6 +63,7 @@ shape = SubResource("CapsuleShape3D_n3xad")
 replication_config = SubResource("SceneReplicationConfig_ly2hg")
 
 [node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath(".")
 script = ExtResource("2_issq4")
 
 [node name="CameraPivot" parent="." instance=ExtResource("3_axrqo")]
