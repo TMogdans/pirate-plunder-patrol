@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://cff8sfafmrsd1"]
+[gd_scene load_steps=13 format=3 uid="uid://cff8sfafmrsd1"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_uqip7"]
 [ext_resource type="Script" path="res://Scripts/playerInput.gd" id="2_issq4"]
 [ext_resource type="PackedScene" uid="uid://dxnxfsu6k2dj5" path="res://Scenes/camera.tscn" id="3_axrqo"]
+[ext_resource type="PackedScene" uid="uid://ddvbl2x8f5mox" path="res://Scenes/progress.tscn" id="4_ilc3m"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_1uo3e"]
 
@@ -76,3 +77,6 @@ replication_config = SubResource("SceneReplicationConfig_6dam1")
 script = ExtResource("2_issq4")
 
 [node name="CameraPivot" parent="." instance=ExtResource("3_axrqo")]
+
+[node name="Progress" parent="." instance=ExtResource("4_ilc3m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.79877, 0)

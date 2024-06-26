@@ -12,8 +12,6 @@ var spawn_range: float = 0.5
 var rnd = RandomNumberGenerator.new()
 var type: TYPES
 
-@onready var debug_panel = get_node("/root/world/UI/DebugPanel")
-
 func _ready():
 	thing = Thing.THING.ITEM
 
@@ -21,11 +19,7 @@ func spawn():
 	speed = Vector3(rnd.randf_range(-spawn_range, spawn_range), spawn_range, rnd.randf_range(-spawn_range, spawn_range))
 	$AnimationPlayer.play("float")
 
-func _physics_process(delta):
-	if debug_panel != null:
-		debug_panel.add_property("is_carried", is_carried, 4)
-		debug_panel.add_property("on floor", is_on_floor(), 5)
-		
+func _physics_process(delta):		
 	if not is_carried:
 		target_velocity.y = target_velocity.y + speed.y
 		

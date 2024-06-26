@@ -3,11 +3,11 @@ extends CharacterBody3D
 const SPEED = 5.0
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
 @export var max_speed: float = 8.0
 @export var dash_speed: float = 16.0
 @export var speed: float = 0.0
-@export var acceleration: float = 16.0
-@export var fall_acceleration: int = 75
+@export var acceleration: float = 20
 @export var friction: float = 10.0
 @export var player := 1:
 	set(id):
@@ -15,7 +15,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 		$PlayerInput.set_multiplayer_authority(id)
 
 @onready var detector = $Pivot/RayCast3D
-@onready var level = get_node("../../level")
+@onready var level = get_node("../../../../level")
 @onready var input = $PlayerInput
 
 #var direction = Vector3.ZERO
@@ -29,8 +29,6 @@ var carry_pos: Vector3 = Vector3(0.0, 1.5, 0.0)
 
 var inventory: Array[Item] = []
 var inventory_capacity = 1
-
-#@onready var debug_panel = get_node("../UI/DebugPanel")
 
 var item_map: Dictionary = {
 	Stocks.TYPES.CANNONBALLS: preload("res://Scenes/cannonballs.tscn"),
@@ -55,6 +53,7 @@ func _physics_process(delta) -> void:
 						
 						if interaction_progress >= interaction_goal:
 							interaction_lock = true
+							interaction_progress = 0.0
 							var type = collider.interact()
 							var instance = _create_item(type)
 							_add_to_inventory(type, instance)
@@ -63,6 +62,7 @@ func _physics_process(delta) -> void:
 						
 						if interaction_progress >= interaction_goal:
 							interaction_lock = true
+							interaction_progress = 0.0
 							var type = collider.interact()
 							collider.reparent(self)
 							collider.is_carried = true
@@ -74,24 +74,33 @@ func _physics_process(delta) -> void:
 							interaction_progress += interaction_speed * delta
 							if interaction_progress >= interaction_goal:
 								interaction_lock = true
+								interaction_progress = 0.0
 								collider.interact()
 						elif not collider.has_powder() and _has_item(Stocks.TYPES.GUNPOWDER):
 							interaction_progress += interaction_speed * delta
 							if interaction_progress >= interaction_goal:
 								interaction_lock = true
+								interaction_progress = 0.0
 								collider.load_powder()
 								_destroy_item(Stocks.TYPES.GUNPOWDER)
 						elif not collider.has_cannonball() and _has_item(Stocks.TYPES.CANNONBALLS):
 							interaction_progress += interaction_speed * delta
 							if interaction_progress >= interaction_goal:
 								interaction_lock = true
+								interaction_progress = 0.0
 								collider.load_cannonball()
 								_destroy_item(Stocks.TYPES.CANNONBALLS)
 	
-	if input.interacting:
+	if not input.interacting:
 		interaction_lock = false
 		interaction_progress = 0.0
-		
+	
+	$Progress.update_progress(interaction_progress * 100, 100)
+	
+	EventBus.emit_signal("debug_info", "interacting", input.interacting, 0)
+	EventBus.emit_signal("debug_info", "int_progress", interaction_progress, 1)
+	EventBus.emit_signal("debug_info", "int_locks", interaction_lock, 2)
+	
 	if Input.is_action_pressed("cancel"):
 		if not inventory.is_empty():
 			var item = _get_last_item_from_inventory()
@@ -105,14 +114,20 @@ func _physics_process(delta) -> void:
 	
 	if not is_dashing:
 		var direction = (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
+		speed += acceleration * delta
 		if direction:
-			velocity.x = direction.x * SPEED
-			velocity.z = direction.z * SPEED
+			velocity.x = direction.x * speed
+			velocity.z = direction.z * speed
 			$Pivot.basis = Basis.looking_at(direction)
 		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
-			velocity.z = move_toward(velocity.z, 0, SPEED)
+			velocity.x = move_toward(velocity.x, 0, speed)
+			velocity.z = move_toward(velocity.z, 0, speed)
+		
 	
+	speed -= friction * delta
+	
+	speed = clamp(speed, 0, max_speed)
+		
 	move_and_slide()
 
 func _create_item(item: Stocks.TYPES) -> Stocks:

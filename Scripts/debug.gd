@@ -4,6 +4,7 @@ extends PanelContainer
 
 func _ready():
 	settings.font_size = 10
+	EventBus.debug_info.connect(_on_receive_info)
 
 func _process(_delta):
 	if visible:
@@ -21,3 +22,6 @@ func add_property(title: String, value, order: int) -> void:
 	elif visible:
 		target.text = title + ": " + str(value)
 		$MarginContainer/VBoxContainer.move_child(target, order)
+
+func _on_receive_info(title: String, value, pos):
+	add_property(title, value, pos)

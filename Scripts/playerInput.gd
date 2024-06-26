@@ -11,6 +11,10 @@ func _ready():
 @rpc("call_local")
 func interact():
 	interacting = true
+	
+@rpc("call_local")
+func not_interact():
+	interacting = false
 
 @rpc("call_local")
 func dash():
@@ -20,5 +24,7 @@ func _process(_delta):
 	direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if Input.is_action_pressed("interact"):
 		interact.rpc()
+	if Input.is_action_just_released("interact"):
+		not_interact.rpc()
 	if Input.is_action_just_pressed("dash"):
 		dash.rpc()

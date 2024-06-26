@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddvbl2x8f5mox"]
+
+[ext_resource type="Texture2D" uid="uid://5m5wvm1no7rk" path="res://Assets/Sprites/barHorizontal_green_mid 200.png" id="1_8jw43"]
+[ext_resource type="Script" path="res://Scripts/progress.gd" id="2_sy22i"]
+[ext_resource type="Script" path="res://Scripts/ProgressBar.gd" id="3_hnf8q"]
+
+[node name="Progress" type="Sprite3D"]
+billboard = 1
+texture = ExtResource("1_8jw43")
+script = ExtResource("2_sy22i")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(200, 26)
+
+[node name="ProgressBar" type="TextureProgressBar" parent="SubViewport"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_hnf8q")

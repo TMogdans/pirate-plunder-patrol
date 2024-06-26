@@ -23,4 +23,6 @@ func load_cannonball() -> void:
 
 func _fire_cannon() -> void:
 	print_debug("fire cannon")
+	_has_cannonball = false
+	_has_powder = false
 	pass
