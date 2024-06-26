@@ -1,10 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://copm3kgbftlpl"]
+[gd_scene load_steps=17 format=3 uid="uid://copm3kgbftlpl"]
 
 [ext_resource type="Script" path="res://Scripts/level.gd" id="1_h88b5"]
 [ext_resource type="PackedScene" uid="uid://dr78jespuof1m" path="res://Scenes/stock_crate.tscn" id="1_p7tl3"]
 [ext_resource type="PackedScene" uid="uid://dixtpxx21yav6" path="res://Scenes/stock_barrel.tscn" id="2_ees5g"]
 [ext_resource type="PackedScene" uid="uid://cca4p2nqarqg3" path="res://Scenes/cannon.tscn" id="3_evcos"]
-[ext_resource type="PackedScene" uid="uid://dxnxfsu6k2dj5" path="res://Scenes/camera.tscn" id="5_q3ggk"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_m0yo4"]
 
@@ -193,12 +192,9 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.0569
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.95537, 0.390952, 8.05893)
 
 [node name="players" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://Scenes/player.tscn")
 spawn_path = NodePath("../players")
 spawn_limit = 4
-
-[node name="CameraPivot" parent="." instance=ExtResource("5_q3ggk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.5482, 0.639398)

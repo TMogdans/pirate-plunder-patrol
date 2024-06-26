@@ -40,6 +40,7 @@ var item_map: Dictionary = {
 }
 
 func _ready() -> void:
+	print_debug("player id %d, multi id %d" % [player, multiplayer.get_unique_id()])
 	if player == multiplayer.get_unique_id():
 		$CameraPivot/Camera3D.current = true
 

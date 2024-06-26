@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cff8sfafmrsd1"]
+[gd_scene load_steps=12 format=3 uid="uid://cff8sfafmrsd1"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_uqip7"]
 [ext_resource type="Script" path="res://Scripts/playerInput.gd" id="2_issq4"]
@@ -30,6 +30,11 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:velocity")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jnesx"]
+properties/0/path = NodePath(".:direction")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
 [node name="player" type="CharacterBody3D"]
 script = ExtResource("1_uqip7")
@@ -64,6 +69,7 @@ replication_config = SubResource("SceneReplicationConfig_ly2hg")
 
 [node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_jnesx")
 script = ExtResource("2_issq4")
 
 [node name="CameraPivot" parent="." instance=ExtResource("3_axrqo")]
