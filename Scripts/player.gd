@@ -15,7 +15,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 		$PlayerInput.set_multiplayer_authority(id)
 
 @onready var detector = $Pivot/RayCast3D
-@onready var level = get_tree().root.get_node("world/level")
+@onready var level = get_node("../../level")
 @onready var input = $PlayerInput
 
 #var direction = Vector3.ZERO
