@@ -1,14 +1,12 @@
 extends CharacterBody3D
 
-const SPEED = 5.0
-
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-@export var max_speed: float = 8.0
-@export var dash_speed: float = 16.0
+@export var max_speed: float = 10.0
+@export var dash_speed: float = 20.0
 @export var speed: float = 0.0
-@export var acceleration: float = 20
-@export var friction: float = 10.0
+@export var acceleration: float = 30
+@export var friction: float = 20.0
 @export var player := 1:
 	set(id):
 		player = id
@@ -18,13 +16,12 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var level = get_node("../../../../level")
 @onready var input = $PlayerInput
 
-#var direction = Vector3.ZERO
+var target_direction = Vector3.ZERO
 var target_velocity = Vector3.ZERO
 var interaction_progress: float = 0
 var interaction_speed: float = 1.0
 var interaction_goal: float = 1.0
 var interaction_lock: bool = false
-var is_dashing: bool = false
 var carry_pos: Vector3 = Vector3(0.0, 1.5, 0.0)
 
 var inventory: Array[Item] = []
@@ -111,24 +108,36 @@ func _physics_process(delta) -> void:
 			
 	if not is_on_floor():
 		velocity.y -= gravity * delta
+		target_velocity.y -= gravity * delta
 	
-	if not is_dashing:
-		var direction = (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
-		speed += acceleration * delta
-		if direction:
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
-			$Pivot.basis = Basis.looking_at(direction)
-		else:
-			velocity.x = move_toward(velocity.x, 0, speed)
-			velocity.z = move_toward(velocity.z, 0, speed)
+	var direction = (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
+	EventBus.emit_signal("debug_info", "is_dashing", input.dashing, 5)
+	
+	if not input.dashing:
+		if direction and speed < max_speed:
+			speed += acceleration * delta
+	else:
+		speed = dash_speed
+		input.dashing = false
 		
+	if direction:
+		EventBus.emit_signal("debug_info", "direction", false, 4)
+		target_direction.x = direction.x
+		target_direction.z = direction.z
+		$Pivot.basis = Basis.looking_at(direction)
+		
+	EventBus.emit_signal("debug_info", "speed", speed, 3)
+	EventBus.emit_signal("debug_info", "velocity", target_velocity, 6)
+	
+	target_velocity.x = target_direction.x * speed
+	target_velocity.z = target_direction.z * speed
+	
+	velocity = target_velocity
+	move_and_slide()
 	
 	speed -= friction * delta
-	
-	speed = clamp(speed, 0, max_speed)
-		
-	move_and_slide()
+	if speed < 0:
+		speed = 0
 
 func _create_item(item: Stocks.TYPES) -> Stocks:
 	var scene: Resource = item_map[item]
